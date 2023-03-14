@@ -12,7 +12,7 @@ const SCREEN_HEIGHT: u32 = 800;
 
 const NODE_SIZE: u32 = 10;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 enum Direction {
     Up,
     Down,
@@ -34,7 +34,9 @@ fn main() {
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
-    let mut snake_head = SnakeNode::new(None);
+    let mut snake_head = SnakeNode::new();
+    snake_head.append_new_node();
+    snake_head.append_new_node();
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     clear_canvas(&mut canvas);
