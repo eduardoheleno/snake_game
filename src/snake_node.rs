@@ -22,7 +22,7 @@ pub struct SnakeNode {
     y: i32,
     rect: Rect,
     direction: Direction,
-    next_node: Box<Option<SnakeNode>>
+    next_node: Option<Box<SnakeNode>>
 }
 
 impl SnakeNode {
@@ -32,27 +32,29 @@ impl SnakeNode {
             y: (SCREEN_HEIGHT / 2) as i32,
             rect: Rect::new((SCREEN_WIDTH / 2) as i32, (SCREEN_HEIGHT / 2) as i32, NODE_SIZE, NODE_SIZE),
             direction: Direction::Up,
-            next_node: Box::new(None)
+            next_node: None
         }
     }
 
     pub fn append_new_node(&mut self) {
-        println!("In: {:#?}", self);
         if self.next_node.is_none() {
             let new_snake_node = self.create_new_node_by_self();
-            self.next_node = Box::new(Some(new_snake_node));
+            self.next_node = Some(Box::new(new_snake_node));
         } else {
-            let mut node_buffer = self.next_node.clone().unwrap();
-            while node_buffer.next_node.is_some() {
-                node_buffer = node_buffer.next_node.unwrap();
+            let mut node_buffer = self.next_node.as_ref().unwrap();
+            while let Some(next_node) = &node_buffer.next_node {
+                node_buffer = next_node;
             }
+            // while let Some(next_node) = node_buffer {
+            //     node_buffer = &mut Some(next_node);
+            // }
+            let new_snake_node = node_buffer.create_new_node_by_self();
+            node_buffer.next_node = Some(Box::new(new_snake_node))
 
             // buffer is not been inserted into the data structure because the value is cloned
-            let new_snake_node = node_buffer.create_new_node_by_self();
-            node_buffer.next_node = Box::new(Some(new_snake_node));
-            println!("buffer: {:#?}", node_buffer);
+            // let new_snake_node = node_buffer.create_new_node_by_self();
+            // node_buffer.next_node = Some(Box::new(new_snake_node));
         }
-        println!("Out: {:#?}", self);
     }
 
     fn create_new_node_by_self(&self) -> SnakeNode {
@@ -68,7 +70,7 @@ impl SnakeNode {
             y: first_position.1,
             rect: Rect::new(first_position.0, first_position.1, NODE_SIZE, NODE_SIZE),
             direction: self.direction,
-            next_node: Box::new(None)
+            next_node: None
         }
     }
 
@@ -80,7 +82,7 @@ impl SnakeNode {
             Direction::Left => self.x -= 1 * NODE_SIZE as i32
         }
 
-        if let Some(next_node) = &mut *self.next_node {
+        if let Some(next_node) = &mut self.next_node {
             next_node.move_node();
         }
     }
@@ -91,7 +93,7 @@ impl SnakeNode {
         canvas.fill_rect(self.rect).unwrap();
         canvas.present();
 
-        if let Some(next_node) = &mut *self.next_node {
+        if let Some(next_node) = &mut self.next_node {
             next_node.draw_node(canvas);
         }
     }
