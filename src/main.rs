@@ -36,7 +36,6 @@ fn main() {
     let mut canvas = window.into_canvas().build().unwrap();
     let mut snake_head = SnakeNode::new();
     snake_head.append_new_node();
-    snake_head.append_new_node();
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     clear_canvas(&mut canvas);

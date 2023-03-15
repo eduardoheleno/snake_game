@@ -41,19 +41,13 @@ impl SnakeNode {
             let new_snake_node = self.create_new_node_by_self();
             self.next_node = Some(Box::new(new_snake_node));
         } else {
-            let mut node_buffer = self.next_node.as_ref().unwrap();
-            while let Some(next_node) = &node_buffer.next_node {
-                node_buffer = next_node;
+            let mut node_buffer = &mut self.next_node;
+            while node_buffer.as_ref().unwrap().next_node.is_some() {
+                node_buffer = &mut node_buffer.as_mut().unwrap().next_node;
             }
-            // while let Some(next_node) = node_buffer {
-            //     node_buffer = &mut Some(next_node);
-            // }
-            let new_snake_node = node_buffer.create_new_node_by_self();
-            node_buffer.next_node = Some(Box::new(new_snake_node))
 
-            // buffer is not been inserted into the data structure because the value is cloned
-            // let new_snake_node = node_buffer.create_new_node_by_self();
-            // node_buffer.next_node = Some(Box::new(new_snake_node));
+            let new_snake_node = node_buffer.as_ref().unwrap().create_new_node_by_self();
+            node_buffer.as_mut().unwrap().next_node = Some(Box::new(new_snake_node));
         }
     }
 
