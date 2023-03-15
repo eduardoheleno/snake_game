@@ -50,7 +50,6 @@ fn main() {
                 _ => {}
             }
         }
-        snake_head.move_node();
         snake_head.frame_action(&mut canvas, &mut event_pump);
     }
 }

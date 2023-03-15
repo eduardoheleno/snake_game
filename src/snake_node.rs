@@ -68,7 +68,7 @@ impl SnakeNode {
         }
     }
 
-    pub fn move_node(&mut self) {
+    fn move_node(&mut self) {
         match self.direction {
             Direction::Up => self.y -= 1 * NODE_SIZE as i32,
             Direction::Down => self.y += 1 * NODE_SIZE as i32,
@@ -92,6 +92,20 @@ impl SnakeNode {
         }
     }
 
+    fn watch_all_prev_nodes(&mut self) {
+        let mut target_nodes_to_change: Vec<&&mut SnakeNode> = Vec::new();
+
+        if self.next_node.is_some() {
+            let mut node_buffer = self;
+
+            while node_buffer.next_node.is_some() {
+                if node_buffer.direction != node_buffer.next_node.as_ref().unwrap().direction {
+                    target_nodes_to_change.push(&node_buffer);
+                }
+            }
+        }
+    }
+
     pub fn frame_action(&mut self, canvas: &mut Canvas<Window>, event_pump: &mut EventPump) {
         for scancode in event_pump.keyboard_state().pressed_scancodes() {
             match scancode {
@@ -104,11 +118,8 @@ impl SnakeNode {
         }
 
         clear_canvas(canvas);
-        self.draw_node(canvas);
-        // canvas.set_draw_color(Color::RGB(255, 0, 0));
-        // self.rect.reposition((self.x, self.y));
-        // canvas.fill_rect(self.rect).unwrap();
-        // canvas.present();
+        self.watch_all_prev_nodes();
+        
 
         sleep(Duration::new(0, 1_000_000_000u32 / 20));
     }
