@@ -93,16 +93,22 @@ impl SnakeNode {
     }
 
     fn watch_all_prev_nodes(&mut self) {
-        let mut target_nodes_to_change: Vec<&&mut SnakeNode> = Vec::new();
+        let mut directions: Vec<Direction> = Vec::new();
+        let mut node_buffer = &self.clone();
 
-        if self.next_node.is_some() {
-            let mut node_buffer = self;
+        while node_buffer.next_node.is_some() {
+            directions.push(node_buffer.direction);
+            node_buffer = node_buffer.next_node.as_ref().unwrap();
+        }
 
-            while node_buffer.next_node.is_some() {
-                if node_buffer.direction != node_buffer.next_node.as_ref().unwrap().direction {
-                    target_nodes_to_change.push(&node_buffer);
-                }
-            }
+        let mut loop_counter = 0;
+        let mut next_node_buffer = &mut self.next_node;
+
+        while next_node_buffer.is_some() {
+            next_node_buffer.as_mut().unwrap().direction = directions[loop_counter];
+
+            next_node_buffer = &mut next_node_buffer.as_mut().unwrap().next_node;
+            loop_counter += 1;
         }
     }
 
@@ -118,9 +124,10 @@ impl SnakeNode {
         }
 
         clear_canvas(canvas);
+        self.move_node();
+        self.draw_node(canvas);
         self.watch_all_prev_nodes();
         
-
-        sleep(Duration::new(0, 1_000_000_000u32 / 20));
+        sleep(Duration::new(0, 1_000_000_000u32 / 10));
     }
 }
