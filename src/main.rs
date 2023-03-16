@@ -7,8 +7,8 @@ use sdl2::keyboard::Keycode;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-const SCREEN_WIDTH: u32 = 800;
-const SCREEN_HEIGHT: u32 = 800;
+const SCREEN_WIDTH: u32 = 400;
+const SCREEN_HEIGHT: u32 = 400;
 
 const NODE_SIZE: u32 = 10;
 
@@ -38,6 +38,7 @@ fn main() {
     snake_head.append_new_node();
     snake_head.append_new_node();
     snake_head.append_new_node();
+
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     clear_canvas(&mut canvas);

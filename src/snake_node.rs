@@ -70,10 +70,34 @@ impl SnakeNode {
 
     fn move_node(&mut self) {
         match self.direction {
-            Direction::Up => self.y -= 1 * NODE_SIZE as i32,
-            Direction::Down => self.y += 1 * NODE_SIZE as i32,
-            Direction::Right => self.x += 1 * NODE_SIZE as i32,
-            Direction::Left => self.x -= 1 * NODE_SIZE as i32
+            Direction::Up => {
+                if self.y == 0 {
+                    self.y = SCREEN_HEIGHT as i32;
+                } else {
+                    self.y -= 1 * NODE_SIZE as i32;
+                }
+            },
+            Direction::Down => {
+                if self.y == SCREEN_HEIGHT as i32 {
+                    self.y = 0;
+                } else {
+                    self.y += 1 * NODE_SIZE as i32;
+                }
+            },
+            Direction::Right => {
+                if self.x == SCREEN_WIDTH as i32 {
+                    self.x = 0;
+                } else {
+                    self.x += 1 * NODE_SIZE as i32;
+                }
+            },
+            Direction::Left => {
+                if self.x == 0 {
+                    self.x = SCREEN_WIDTH as i32;
+                } else {
+                    self.x -= 1 * NODE_SIZE as i32;
+                }
+            }
         }
 
         if let Some(next_node) = &mut self.next_node {
@@ -131,3 +155,6 @@ impl SnakeNode {
         sleep(Duration::new(0, 1_000_000_000u32 / 10));
     }
 }
+
+// TODO:
+// - fix problem where player can hide in a edge between canvas and the area that teleports the player back to the otherside
