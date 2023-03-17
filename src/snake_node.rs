@@ -109,11 +109,12 @@ impl SnakeNode {
         canvas.set_draw_color(Color::RGB(255, 0, 0));
         self.rect.reposition((self.x, self.y));
         canvas.fill_rect(self.rect).unwrap();
-        canvas.present();
-
+        
         if let Some(next_node) = &mut self.next_node {
             next_node.draw_node(canvas);
         }
+
+        canvas.present();
     }
 
     fn watch_all_prev_nodes(&mut self) {
@@ -157,4 +158,4 @@ impl SnakeNode {
 }
 
 // TODO:
-// - fix problem where player can hide in a edge between canvas and the area that teleports the player back to the otherside
+// - fix problem where the player can hide in a edge between canvas and the area that teleports the player back to the otherside
