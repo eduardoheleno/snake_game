@@ -9,9 +9,6 @@ use super::{
     clear_canvas
 };
 
-use std::thread::sleep;
-use std::time::Duration;
-
 use sdl2::rect::Rect;
 use sdl2::EventPump;
 use sdl2::keyboard::Scancode;
@@ -137,6 +134,23 @@ impl SnakeNode {
         }
     }
 
+    pub fn check_head_collision(&self) -> bool {
+        let head_pos = (self.x, self.y);
+        let mut node_buffer = &self.next_node;
+
+        while node_buffer.is_some() {
+            let node = node_buffer.as_ref().unwrap();
+
+            if node.x == head_pos.0 && node.y == head_pos.1 {
+                return true;
+            }
+
+            node_buffer = &node_buffer.as_ref().unwrap().next_node;
+        }
+
+        false
+    }
+
     pub fn frame_action(&mut self, canvas: &mut Canvas<Window>, event_pump: &mut EventPump) {
         for scancode in event_pump.keyboard_state().pressed_scancodes() {
             match scancode {
@@ -149,13 +163,14 @@ impl SnakeNode {
         }
 
         clear_canvas(canvas);
+
         self.move_node();
         self.draw_node(canvas);
         self.watch_all_prev_nodes();
-        
-        sleep(Duration::new(0, 1_000_000_000u32 / 10));
+        self.check_head_collision();
     }
 }
 
 // TODO:
+// - reset game when first snake node hit his own body
 // - fix problem where the player can hide in a edge between canvas and the area that teleports the player back to the otherside
