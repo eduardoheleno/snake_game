@@ -14,7 +14,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use rand::{ thread_rng, Rng };
+use rand::Rng;
 
 const SCREEN_WIDTH: u32 = 400;
 const SCREEN_HEIGHT: u32 = 400;
@@ -63,30 +63,6 @@ fn main() {
         let mut snake_head = SnakeNode::new();
         let mut frame_counter = 0;
 
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
-        snake_head.append_new_node();
         'eventloop: loop {
             for event in event_pump.poll_iter() {
                 match event {
@@ -97,7 +73,7 @@ fn main() {
                     _ => {}
                 }
             }
-            snake_head.frame_action(&mut canvas, &mut event_pump);
+            snake_head.frame_action(&mut canvas, &mut event_pump, &mut fruit);
 
             if fruit.is_some() {
                 canvas.set_draw_color(Color::RGB(0, 255, 0));
@@ -112,7 +88,7 @@ fn main() {
                 frame_counter = 0;
             }
 
-            if snake_head.check_head_collision() {
+            if snake_head.check_head_collision_with_body() {
                 drop(snake_head);
                 break 'eventloop;
             }

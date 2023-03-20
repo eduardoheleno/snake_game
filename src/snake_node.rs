@@ -6,7 +6,8 @@ use super::{
     Canvas,
     Window,
     Color,
-    clear_canvas
+    clear_canvas,
+    Fruit
 };
 
 use sdl2::rect::Rect;
@@ -33,7 +34,7 @@ impl SnakeNode {
         }
     }
 
-    pub fn append_new_node(&mut self) {
+    fn append_new_node(&mut self) {
         if self.next_node.is_none() {
             let new_snake_node = self.create_new_node_by_self();
             self.next_node = Some(Box::new(new_snake_node));
@@ -132,7 +133,16 @@ impl SnakeNode {
         }
     }
 
-    pub fn check_head_collision(&self) -> bool {
+    fn check_head_collision_with_fruit(&mut self, fruit: &mut Option<Fruit>) {
+        if let Some(f) = fruit {
+            if self.x == f.x && self.y == f.y {
+                self.append_new_node();
+                *fruit = None;
+            }
+        }
+    }
+
+    pub fn check_head_collision_with_body(&self) -> bool {
         let head_pos = (self.x, self.y);
         let mut node_buffer = &self.next_node;
 
@@ -149,7 +159,7 @@ impl SnakeNode {
         false
     }
 
-    pub fn frame_action(&mut self, canvas: &mut Canvas<Window>, event_pump: &mut EventPump) {
+    pub fn frame_action(&mut self, canvas: &mut Canvas<Window>, event_pump: &mut EventPump, fruit: &mut Option<Fruit>) {
         for scancode in event_pump.keyboard_state().pressed_scancodes() {
             match scancode {
                 Scancode::Up => if self.direction != Direction::Down { self.direction = Direction::Up }
@@ -165,7 +175,7 @@ impl SnakeNode {
         self.move_node();
         self.draw_node(canvas);
         self.watch_all_prev_nodes();
-        self.check_head_collision();
+        self.check_head_collision_with_fruit(fruit);
     }
 }
 

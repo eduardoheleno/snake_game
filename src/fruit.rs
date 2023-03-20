@@ -3,8 +3,8 @@ use super::NODE_SIZE;
 use sdl2::rect::Rect;
 
 pub struct Fruit {
-    x: i32,
-    y: i32,
+    pub x: i32,
+    pub y: i32,
     pub rect: Rect
 }
 
