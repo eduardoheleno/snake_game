@@ -110,8 +110,6 @@ impl SnakeNode {
         if let Some(next_node) = &mut self.next_node {
             next_node.draw_node(canvas);
         }
-
-        canvas.present();
     }
 
     fn watch_all_prev_nodes(&mut self) {
